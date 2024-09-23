@@ -1,6 +1,6 @@
 <img width="150" height="150" align="right" src="https://raw.githubusercontent.com/kriasoft/isomorphic-style-loader/8fe56ef8fba794e00bfbc9b6d731edf0f572d4e7/logo.png" />
 
-# Isomorphic CSS style loader for [Webpack](http://webpack.github.io)
+# Forked verison of Isomorphic CSS style loader for [Webpack](http://webpack.github.io) with react 18 support
 
 [![NPM version](https://img.shields.io/npm/v/isomorphic-style-loader.svg)](https://www.npmjs.com/package/isomorphic-style-loader)
 [![NPM downloads](https://img.shields.io/npm/dw/isomorphic-style-loader.svg)](https://www.npmjs.com/package/isomorphic-style-loader)
@@ -22,7 +22,7 @@ chat room on Discord to stay up to date
 ## How to Install
 
 ```bash
-$ npm install isomorphic-style-loader --save-dev
+npm install isomorphic-style-loader-react-18 --save-dev
 ```
 
 ## Getting Started
@@ -37,37 +37,41 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          'isomorphic-style-loader',
+          'isomorphic-style-loader-react-18',
           {
             loader: 'css-loader',
             options: {
-              importLoaders: 1
-            }
+              importLoaders: 1,
+            },
           },
-          'postcss-loader'
-        ]
-      }
-    ]
-  }
+          'postcss-loader',
+        ],
+      },
+    ],
+  },
   /* ... */
 }
 ```
 
 **Note**: Configuration is the same for both client-side and server-side bundles. For more
-information visit https://webpack.js.org/configuration/module/.
+information visit <https://webpack.js.org/configuration/module/>.
 
 **React component example:**
 
 ```css
 /* App.css */
-.root { padding: 10px }
-.title { color: red }
+.root {
+  padding: 10px;
+}
+.title {
+  color: red;
+}
 ```
 
 ```js
 /* App.js */
 import React from 'react'
-import withStyles from 'isomorphic-style-loader/withStyles'
+import withStyles from 'isomorphic-style-loader-react-18/withStyles'
 import s from './App.scss'
 
 function App(props, context) {
@@ -93,7 +97,7 @@ on the server. See server-side rendering example below:
 import express from 'express'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import StyleContext from 'isomorphic-style-loader/StyleContext'
+import StyleContext from 'isomorphic-style-loader-react-18/StyleContext'
 import App from './App.js'
 
 const server = express()
@@ -102,11 +106,11 @@ const port = process.env.PORT || 3000
 // Server-side rendering of the React app
 server.get('*', (req, res, next) => {
   const css = new Set() // CSS for all rendered React components
-  const insertCss = (...styles) => styles.forEach(style => css.add(style._getCss()))
+  const insertCss = (...styles) => styles.forEach((style) => css.add(style._getCss()))
   const body = ReactDOM.renderToString(
     <StyleContext.Provider value={{ insertCss }}>
       <App />
-    </StyleContext.Provider>
+    </StyleContext.Provider>,
   )
   const html = `<!doctype html>
     <html>
@@ -134,8 +138,12 @@ It should generate an HTML output similar to this one:
     <title>My Application</title>
     <script async src="/client.js"></script>
     <style type="text/css">
-      .App_root_Hi8 { padding: 10px }
-      .App_title_e9Q { color: red }
+      .App_root_Hi8 {
+        padding: 10px;
+      }
+      .App_title_e9Q {
+        color: red;
+      }
     </style>
   </head>
   <body>
@@ -162,19 +170,19 @@ to make your markup interactive:
 ```js
 import React from 'react'
 import ReactDOM from 'react-dom'
-import StyleContext from 'isomorphic-style-loader/StyleContext'
+import StyleContext from 'isomorphic-style-loader-react-18/StyleContext'
 import App from './App.js'
 
 const insertCss = (...styles) => {
-  const removeCss = styles.map(style => style._insertCss())
-  return () => removeCss.forEach(dispose => dispose())
+  const removeCss = styles.map((style) => style._insertCss())
+  return () => removeCss.forEach((dispose) => dispose())
 }
 
 ReactDOM.hydrate(
   <StyleContext.Provider value={{ insertCss }}>
     <App />
   </StyleContext.Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
 )
 ```
 
@@ -185,35 +193,29 @@ Please note that you still need to pass `insertCss` function to `StyleContext.Pr
 
 ```js
 import React from 'react'
-import useStyles from 'isomorphic-style-loader/useStyles'
+import useStyles from 'isomorphic-style-loader-react-18/useStyles'
 import s from './App.scss'
 
 const App = (props) => {
-  useStyles(s);
+  useStyles(s)
   return (
     <div className={s.root}>
       <h1 className={s.title}>Hello, world!</h1>
     </div>
   )
-};
+}
 
-export default App;
+export default App
 ```
 
 ## Related Projects
 
-* [React Starter Kit](https://github.com/kriasoft/react-starter-kit) —
+- [React Starter Kit](https://github.com/kriasoft/react-starter-kit) —
   Isomorphic web app boilerplate (Express.js, React, Relay)
-* [Node.js API Starter](https://github.com/kriasoft/nodejs-api-starter) —
+- [Node.js API Starter](https://github.com/kriasoft/nodejs-api-starter) —
   Project tempalte for building GraphQL API backends
 
 ## License
 
 The MIT License © 2015-present Kriasoft ([@kriasoft](https://twitter.com/kriasoft)).
 All rights reserved.
-
----
-Made with ♥ by
-Konstantin Tarkus ([@koistya](https://twitter.com/koistya), [blog](https://medium.com/@tarkus)),
-Vladimir Kutepov ([frenzzy](https://github.com/frenzzy))
-and [contributors](https://github.com/kriasoft/isomorphic-style-loader/graphs/contributors)
